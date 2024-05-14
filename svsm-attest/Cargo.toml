@@ -1,0 +1,9 @@
+[package]
+name = "svsm-attest"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+kbs-types = { version = "0.6.0", default-features = false, features = ["alloc"] }
+serde = { version = "1.0.203", default-features = false, features = ["alloc", "derive"] }
+serde_json = { version = "1.0.117", default-features = false, features = ["alloc"] }
