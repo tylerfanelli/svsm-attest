@@ -1,4 +1,4 @@
 target/
-Cargo.lock
 svsm-attest/Cargo.lock
 svsm-attest/target
+proxy/target

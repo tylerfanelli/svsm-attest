@@ -1,0 +1,12 @@
+[package]
+name = "svsm-attest-proxy"
+authors = ["Tyler Fanelli <tfanelli@redhat.com>", "Stefano Garzarella <sgarzare@redhat.com>"]
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.86"
+clap = { version = "4.5.7", features = ["derive"] }
+env_logger = "0.11.3"
+log = "0.4.21"
+svsm-attest = { path = "../svsm-attest" }
