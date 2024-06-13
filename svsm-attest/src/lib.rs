@@ -2,6 +2,11 @@
 
 #![no_std]
 
+pub mod error;
+pub mod proxy;
+
+pub use error::*;
+
 extern crate alloc;
 
 use alloc::string::String;
