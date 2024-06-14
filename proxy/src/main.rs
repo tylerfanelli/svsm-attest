@@ -8,7 +8,9 @@ use std::{
 
 use anyhow::Context;
 use clap::Parser;
-use log::error;
+use log::{debug, error};
+
+use svsm_attest::SvsmProxyInput;
 
 #[derive(Parser)]
 #[clap(version, about, long_about = None)]
@@ -52,6 +54,18 @@ fn main() -> anyhow::Result<()> {
     Ok(())
 }
 
-fn proxy(stream: UnixStream, url: String) {
+fn proxy(mut stream: UnixStream, url: String) {
+    let output = attest(&mut stream, url);
+
+    /*
+     * TODO: write the output to the proxy.
+     */
+
     todo!();
+}
+
+fn attest(stream: &mut UnixStream, url: String) {
+    let input = SvsmProxyInput::from_proxy(stream);
+
+    debug!("Proxy input {:?}", input);
 }
