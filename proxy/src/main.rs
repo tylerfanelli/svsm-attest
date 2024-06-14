@@ -24,6 +24,7 @@ struct Args {
     unix: String,
 
     /// Force deletion of unix socket if path already exists.
+    #[clap(long, default_value = "false")]
     force: bool,
 }
 
