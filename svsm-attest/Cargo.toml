@@ -3,6 +3,10 @@ name = "svsm-attest"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+default = ["std"]
+std = []
+
 [dependencies]
 kbs-types = { version = "0.6.0", default-features = false, features = ["alloc"] }
 serde = { version = "1.0.203", default-features = false, features = ["alloc", "derive"] }
