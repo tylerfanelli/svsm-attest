@@ -7,6 +7,8 @@ pub use error::*;
 
 extern crate alloc;
 
+use proxy::SvsmProxyRead;
+
 use alloc::string::String;
 
 use kbs_types::Tee;
@@ -29,4 +31,22 @@ pub struct SvsmProxyInput {
 
     /// PEM-encoded RSA public key.
     pub pubkey_pem: String,
+}
+
+impl SvsmProxyInput {
+    pub fn from_proxy(proxy: &mut impl SvsmProxyRead) -> Result<SvsmProxyInput> {
+        let mut len = [0u8; 4];
+        proxy.read_exact(&mut len)?;
+
+        let len: usize = match u32::from_ne_bytes(len).try_into() {
+            Ok(l) => l,
+            Err(_) => return Err(Error::InputLenDeserialize),
+        };
+
+        let mut buf = vec![0u8; len];
+
+        proxy.read_exact(&mut buf)?;
+
+        serde_json::from_slice(&buf).map_err(Error::JsonDeserialize)
+    }
 }

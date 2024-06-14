@@ -20,6 +20,9 @@ pub enum Error {
 
     #[cfg(feature = "std")]
     UnixSocketRead(io::Error),
+
+    InputLenDeserialize,
+    JsonDeserialize(serde_json::Error),
 }
 
 impl Display for Error {
@@ -31,6 +34,11 @@ impl Display for Error {
 
             #[cfg(feature = "std")]
             Self::UnixSocketRead(io) => write!(f, "unable to read from unix socket: {}", io),
+
+            Self::InputLenDeserialize => write!(f, "unable to convert input length to usize"),
+            Self::JsonDeserialize(e) => {
+                write!(f, "unable to deserialize SVSM proxy input from JSON: {}", e)
+            }
         }
     }
 }
