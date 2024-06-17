@@ -5,7 +5,10 @@ use crate::error::{Error, Result};
 use alloc::boxed::Box;
 
 #[cfg(feature = "std")]
-use std::{io::Read, os::unix::net::UnixStream};
+use std::{
+    io::{Read, Write},
+    os::unix::net::UnixStream,
+};
 
 /// Although from a userspace perspective the proxy is a UNIX socket; an SVSM guest can talk to the
 /// socket through a number of interfaces such as a serial device, virtio-vhost socket, etc.
@@ -72,5 +75,16 @@ pub trait SvsmProxyWrite {
         }
 
         Ok(())
+    }
+}
+
+#[cfg(feature = "std")]
+impl SvsmProxyWrite for UnixStream {
+    fn write(&mut self, buf: &[u8]) -> Result<usize> {
+        Write::write(self, buf).map_err(Error::UnixSocketWrite)
+    }
+
+    fn flush(&mut self) -> Result<()> {
+        Write::flush(self).map_err(Error::UnixSocketFlush)
     }
 }

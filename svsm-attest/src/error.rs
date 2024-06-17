@@ -25,6 +25,10 @@ pub enum Error {
     JsonDeserialize(serde_json::Error),
 
     WriteZero,
+    #[cfg(feature = "std")]
+    UnixSocketWrite(io::Error),
+    #[cfg(feature = "std")]
+    UnixSocketFlush(io::Error),
 }
 
 impl Display for Error {
@@ -42,6 +46,10 @@ impl Display for Error {
                 write!(f, "unable to deserialize SVSM proxy input from JSON: {}", e)
             }
             Self::WriteZero => write!(f, "wrote zero bytes to proxy"),
+            #[cfg(feature = "std")]
+            Self::UnixSocketWrite(io) => write!(f, "unable to write to unix socket: {}", io),
+            #[cfg(feature = "std")]
+            Self::UnixSocketFlush(io) => write!(f, "unable to flush unix socket: {}", io),
         }
     }
 }
