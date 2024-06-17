@@ -23,6 +23,8 @@ pub enum Error {
 
     InputLenDeserialize,
     JsonDeserialize(serde_json::Error),
+
+    WriteZero,
 }
 
 impl Display for Error {
@@ -39,6 +41,7 @@ impl Display for Error {
             Self::JsonDeserialize(e) => {
                 write!(f, "unable to deserialize SVSM proxy input from JSON: {}", e)
             }
+            Self::WriteZero => write!(f, "wrote zero bytes to proxy"),
         }
     }
 }

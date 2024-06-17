@@ -49,3 +49,28 @@ impl SvsmProxyRead for UnixStream {
         self.read(buf).map_err(Error::UnixSocketRead)
     }
 }
+
+/// As with SvsmProxyRead, an SVSM guest can talk to the socket through a number of interfaces.
+/// SvsmProxyWrite allows any of these interfaces to implement their own distinctive way of writing
+/// attestation data.
+pub trait SvsmProxyWrite {
+    /// Write bytes to a data stream. Return the number of bytes written to the stream.
+    fn write(&mut self, buf: &[u8]) -> Result<usize>;
+
+    /// Flush the output stream, ensuring that all intermediately buffered contents reach their
+    /// destination.
+    fn flush(&mut self) -> Result<()>;
+
+    /// Write all bytes from the proxy to a given data stream.
+    fn write_all(&mut self, mut buf: &[u8]) -> Result<()> {
+        while !buf.is_empty() {
+            match self.write(buf) {
+                Ok(0) => return Err(Error::WriteZero),
+                Ok(n) => buf = &buf[n..],
+                Err(e) => return Err(e),
+            }
+        }
+
+        Ok(())
+    }
+}
