@@ -50,3 +50,20 @@ impl SvsmProxyInput {
         serde_json::from_slice(&buf).map_err(Error::JsonDeserialize)
     }
 }
+
+/// Encapsulates all attestation data outputted from the proxy with results from a remote
+/// attestation server. Since data is written over a socket, a boolean indicator of success must be
+/// checked to ensure attestation was successful. If attestation was unsuccessful, the encrypted
+/// results should not be read.
+///
+/// If attestation was successful, the encrypted results will be JSON-serialized.
+///
+/// This defines a standard for what will be transferred from the attestation proxy to SVSM.
+#[derive(Debug, Deserialize, Serialize)]
+pub struct SvsmProxyOutput {
+    /// Indicator of attestation success.
+    pub success: bool,
+
+    /// Encrypted attestation results.
+    pub res_encrypted: Value,
+}
