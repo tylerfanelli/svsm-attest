@@ -29,6 +29,8 @@ pub enum Error {
     UnixSocketWrite(io::Error),
     #[cfg(feature = "std")]
     UnixSocketFlush(io::Error),
+
+    JsonSerialize(serde_json::Error),
 }
 
 impl Display for Error {
@@ -50,6 +52,7 @@ impl Display for Error {
             Self::UnixSocketWrite(io) => write!(f, "unable to write to unix socket: {}", io),
             #[cfg(feature = "std")]
             Self::UnixSocketFlush(io) => write!(f, "unable to flush unix socket: {}", io),
+            Self::JsonSerialize(json) => write!(f, "unable to serialize to JSON: {}", json),
         }
     }
 }

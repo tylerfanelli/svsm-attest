@@ -7,7 +7,7 @@ pub use error::*;
 
 extern crate alloc;
 
-use proxy::SvsmProxyRead;
+use proxy::{SvsmProxyRead, SvsmProxyWrite};
 
 use alloc::string::String;
 
@@ -66,4 +66,15 @@ pub struct SvsmProxyOutput {
 
     /// Encrypted attestation results.
     pub res_encrypted: Value,
+}
+
+impl SvsmProxyOutput {
+    pub fn to_proxy(&self, proxy: &mut impl SvsmProxyWrite) -> Result<()> {
+        let vec = serde_json::to_vec(&self).map_err(Error::JsonSerialize)?;
+
+        proxy.write_all(&vec.len().to_ne_bytes())?;
+        proxy.write_all(&vec)?;
+
+        Ok(())
+    }
 }
