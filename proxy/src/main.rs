@@ -10,7 +10,7 @@ use anyhow::Context;
 use clap::Parser;
 use log::{debug, error};
 
-use svsm_attest::{SvsmProxyInput, SvsmProxyIo};
+use svsm_attest::{SvsmProxyInput, SvsmProxyIo, SvsmProxyOutput};
 
 #[derive(Parser)]
 #[clap(version, about, long_about = None)]
@@ -57,6 +57,13 @@ fn main() -> anyhow::Result<()> {
 
 fn proxy(mut stream: UnixStream, url: String) {
     let output = attest(&mut stream, url);
+
+    let output = svsm_attest::SvsmProxyOutput {
+        success: false,
+        res_encrypted: serde_json::Value::String("hello".to_string()),
+    };
+
+    output.to_proxy(&mut stream).unwrap();
 
     /*
      * TODO: write the output to the proxy.
