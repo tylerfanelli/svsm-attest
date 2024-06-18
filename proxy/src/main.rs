@@ -10,7 +10,7 @@ use anyhow::Context;
 use clap::Parser;
 use log::{debug, error};
 
-use svsm_attest::SvsmProxyInput;
+use svsm_attest::{SvsmProxyInput, SvsmProxyIo};
 
 #[derive(Parser)]
 #[clap(version, about, long_about = None)]
