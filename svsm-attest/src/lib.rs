@@ -48,6 +48,8 @@ pub trait SvsmProxyIo {
         proxy.write_all(&vec.len().to_ne_bytes())?;
         proxy.write_all(&vec)?;
 
+        proxy.flush()?;
+
         Ok(())
     }
 }
