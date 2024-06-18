@@ -28,7 +28,7 @@ pub trait SvsmProxyIo {
 
         let len: usize = match u32::from_ne_bytes(len).try_into() {
             Ok(l) => l,
-            Err(_) => return Err(Error::InputLenDeserialize),
+            Err(_) => return Err(Error::IoLenSerialization),
         };
 
         let mut buf = vec![0u8; len];
@@ -45,7 +45,12 @@ pub trait SvsmProxyIo {
     {
         let vec = serde_json::to_vec(&self).map_err(Error::JsonSerialize)?;
 
-        proxy.write_all(&vec.len().to_ne_bytes())?;
+        let len = match u32::try_from(vec.len()) {
+            Ok(l) => l,
+            Err(_) => return Err(Error::IoLenSerialization),
+        };
+
+        proxy.write_all(&len.to_ne_bytes())?;
         proxy.write_all(&vec)?;
 
         proxy.flush()?;
